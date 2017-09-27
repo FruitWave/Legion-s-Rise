@@ -11,18 +11,19 @@ import javax.swing.Timer;
 
 public class Tracer extends JPanel implements ActionListener, KeyListener {
 	Timer godclock;
-	Timer delayedBoom;
-	Timer explosionPreceder;
+
 	Overwatcher granger;
 	Player fritz;
-	Projectile polypencil;
+	BulletProjectile pencil;
+	boolean goingup = false;
+	boolean goingdown = false;
+	boolean goingleft = false;
+	boolean goingright = false;
+	Timer slide;
 
 	public Tracer() {
 		godclock = new Timer(1000 / 150, this);
-		delayedBoom = new Timer(100000000, this);
-		delayedBoom.setInitialDelay(450);
-		explosionPreceder = new Timer(100000000, this);
-		explosionPreceder.setInitialDelay(200);
+
 	}
 
 	@Override
@@ -33,13 +34,37 @@ public class Tracer extends JPanel implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// maneuvering and shooting
+
+		// shooting
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			Projectile pencil = new Projectile(fritz.x + fritz.width, fritz.y + fritz.height / 2, 25, 13, 0);
+			pencil = new BulletProjectile(fritz.x + fritz.width, fritz.y + fritz.height / 2, 15, 5, 0);
 			granger.addObject(-10, pencil);
-			polypencil = pencil;
-			delayedBoom.start();
+			pencil.delayedBoom.start();
 			System.out.println("pencil has been added");
+		}
+		// maneuvering
+		if ((e.getKeyCode() == KeyEvent.VK_W) || (e.getKeyCode() == KeyEvent.VK_S) || (e.getKeyCode() == KeyEvent.VK_A)
+				|| (e.getKeyCode() == KeyEvent.VK_D)) {
+			slide = new Timer(1000 / 10, this);
+
+			if (e.getKeyCode() == KeyEvent.VK_W) {
+				fritz.yspeed -= 5;
+				goingup = true;
+				goingdown = false;
+			} else if (e.getKeyCode() == KeyEvent.VK_S) {
+				fritz.yspeed += 5;
+				goingdown = true;
+				goingup = false;
+			} else if (e.getKeyCode() == KeyEvent.VK_A) {
+				fritz.xspeed -= 5;
+				goingleft = true;
+				goingright = false;
+			} else if (e.getKeyCode() == KeyEvent.VK_D) {
+				fritz.xspeed += 5;
+				goingright = true;
+				goingleft = false;
+			}
+			slide.start();
 		}
 		// dev tools
 		if (e.getKeyCode() == KeyEvent.VK_L) {
@@ -53,8 +78,39 @@ public class Tracer extends JPanel implements ActionListener, KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 
+		if (goingdown) {
+			for (int i = fritz.yspeed; i > 0; i++) {
+				fritz.yspeed -= 1;
+			}
+			if (fritz.yspeed <= 0) {
+				goingdown = false;
+			}
+		}
+		if (goingup) {
+			for (int i = fritz.yspeed; i < 0; i++) {
+				fritz.yspeed += 1;
+			}
+			if (fritz.yspeed >= 0) {
+				goingup = false;
+			}
+		}
+		if (goingright) {
+			for (int i = fritz.xspeed; i > 0; i++) {
+				fritz.xspeed -= 1;
+			}
+			if (fritz.xspeed <= 0) {
+				goingright = false;
+			}
+		}
+		if (goingleft) {
+			for (int i = fritz.xspeed; i < 0; i++) {
+				fritz.xspeed += 1;
+			}
+			if (fritz.xspeed >= 0) {
+				goingleft = false;
+			}
+		}
 	}
 
 	public void updateGame() {
@@ -89,18 +145,9 @@ public class Tracer extends JPanel implements ActionListener, KeyListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		updateGame();
-		if (e.getSource() == delayedBoom) {
-			delayedBoom.stop();
-			Projectile a = polypencil;
-			if (a != null) {
-				a.projectilecolor = a.fuseIsBurning;
-			}
-			explosionPreceder.start();
-
+		if (e.getSource() == godclock) {
+			updateGame();
 		}
-		// if (e.getSource() == explosionPreceder) {
-		//
-		// }
+
 	}
 }

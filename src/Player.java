@@ -2,16 +2,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Player extends GameObject {
-	int health = 100;
+	int xspeed;
+	int yspeed;
 
 	public Player(int x, int y, int width, int height, int health) {
 		super(x, y, width, height, health);
-		this.health = health;
+		xspeed = 0;
+		yspeed = 0;
 	}
 
 	@Override
 	public void update() {
 		super.update();
+		x += xspeed;
+		y += yspeed;
 	}
 
 	@Override

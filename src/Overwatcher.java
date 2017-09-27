@@ -38,7 +38,7 @@ public class Overwatcher {
 			o.update();
 		}
 		// checkCollision();
-		// purgeObjects();
+		purgeObjects();
 	}
 
 	public void draw(Graphics g) {
@@ -50,11 +50,11 @@ public class Overwatcher {
 		}
 	}
 
-	public Projectile getCurrentProjectile() {
+	public BulletProjectile getCurrentProjectile() {
 		int i = objects.size();
 		GameObject j = objects.get(i);
-		if (j instanceof Projectile) {
-			return (Projectile) j;
+		if (j instanceof BulletProjectile) {
+			return (BulletProjectile) j;
 		}
 		return null;
 
