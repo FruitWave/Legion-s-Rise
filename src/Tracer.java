@@ -124,7 +124,6 @@ public class Tracer extends JPanel implements ActionListener, KeyListener {
 		granger.draw(g);
 	}
 
-	@Override
 	protected void paintComponent(Graphics tapestrical) {
 		// TODO Auto-generated method stub
 		System.out.println("repaint");
